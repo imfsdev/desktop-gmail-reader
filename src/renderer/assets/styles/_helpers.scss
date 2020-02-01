@@ -1,0 +1,39 @@
+$size-list: 0 0.25rem 0.5rem 1rem 2rem 3rem 4rem;
+
+@for $i from 1 through 7 {
+  $i1: $i - 1;
+
+  .has-margin-#{$i - 1} {
+    margin: nth($size-list, $i) !important;
+  }
+  .has-margin-x-#{$i - 1} {
+    margin-left: nth($size-list, $i) !important;
+    margin-right: nth($size-list, $i) !important;
+  }
+  .has-margin-y-#{$i - 1} {
+    margin-top: nth($size-list, $i) !important;
+    margin-bottom: nth($size-list, $i) !important;
+  }
+  .has-padding-#{$i - 1} {
+    padding: nth($size-list, $i) !important;
+  }
+  .has-padding-x-#{$i - 1} {
+    padding-left: nth($size-list, $i) !important;
+    padding-right: nth($size-list, $i) !important;
+  }
+  .has-padding-y-#{$i - 1} {
+    padding-top: nth($size-list, $i) !important;
+    padding-bottom: nth($size-list, $i) !important;
+  }
+  @each $dir in (top left bottom right) {
+    .has-padding-#{$dir}-#{$i - 1} {
+      padding-#{$dir}: nth($size-list, $i) !important;
+    }
+    .has-margin-#{$dir}-#{$i - 1} {
+      margin-#{$dir}: nth($size-list, $i) !important;
+    }
+  }
+}
+.is-full-width {
+  width: 100%;
+}

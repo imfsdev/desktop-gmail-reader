@@ -1,0 +1,27 @@
+// Bulma overrides
+$text: hsl(0, 0%, 86%);
+
+// Buefy overrides
+
+// import bulma and buefy
+@import '~bulma';
+@import '~buefy/src/scss/buefy';
+
+$fa-font-path: '~@/assets/fontawesome/webfonts';
+@import '~@/assets/fontawesome/scss/fontawesome.scss';
+@import '~@/assets/fontawesome/scss/solid.scss';
+
+@import 'helpers';
+
+html, body {
+  box-sizing: border-box;
+  font-size: 16px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: $black-ter;
+}
+
+#app {
+  height: 100%;
+}
