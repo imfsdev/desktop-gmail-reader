@@ -6,13 +6,38 @@
     .is-size-6 {{ item.subject }}
     .is-size-7.has-text-weight-semibold.has-margin-bottom-2 To: {{ item.to }}
     .snippet.is-size-7 {{ item.snippet }}
-    .actions
-      b-tooltip(label="Mark as Read" position="is-bottom" type="is-info" animated)
-        b-button(type="is-info" @click="$emit('read')" v-if="!item.read")
-          b-icon(icon="envelope-open-text" pack="fas" size="is-small")
-      b-tooltip.has-margin-left-2(label="Delete" type="is-danger" position="is-bottom" animated)
-        b-button(type="is-danger" @click="$emit('delete')" v-if="item.read")
-          b-icon(icon="trash-alt" pack="fas" size="is-small")
+    .actions.has-padding-right-2
+      b-tooltip(
+        label="View"
+        position="is-bottom"
+        type="is-white"
+        animated
+        )
+        b-button(
+          icon-left="eye"
+          @click="$emit('view')")
+      b-tooltip.has-margin-left-2(
+        label="Mark as Read"
+        position="is-bottom"
+        type="is-info"
+        animated
+        v-if="!item.read"
+        )
+        b-button(
+          type="is-info"
+          icon-left="envelope-open-text"
+          @click="$emit('read')")
+      b-tooltip.has-margin-left-2(
+        label="Delete"
+        type="is-danger"
+        position="is-bottom"
+        animated
+        v-if="item.read"
+        )
+        b-button(
+          type="is-danger"
+          icon-left="trash-alt"
+          @click="$emit('delete')")
 </template>
 
 <script>
@@ -40,7 +65,6 @@ export default {
 <style lang="scss" scoped>
 .mail-item {
   border-bottom: 1px solid $grey;
-  cursor: pointer;
   position: relative;
 
   .email {
@@ -76,6 +100,8 @@ export default {
   }
 
   &:hover {
+    background-color: rgba($grey, 0.05);
+
     .actions {
       opacity: 1;
     }
