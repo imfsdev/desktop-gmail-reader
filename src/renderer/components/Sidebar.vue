@@ -16,10 +16,13 @@
     b-button.has-margin-top-4.is-full-width(
       type="is-info"
       icon-left="plus-circle"
+      @click="addAccount()"
       ) Add
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'sidebar',
   props: {
@@ -40,7 +43,8 @@ export default {
       const counts = Object.values(this.emails)
       return counts.reduce((acc, c) => acc + c, 0)
     }
-  }
+  },
+  methods: mapActions('accounts', ['addAccount'])
 }
 </script>
 

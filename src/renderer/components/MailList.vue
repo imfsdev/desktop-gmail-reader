@@ -19,6 +19,7 @@
       :item="item"
       @read="readMessage(item)"
       @delete="deleteMessage(item)"
+      @view="view(item)"
       v-for="item in list"
       )
 </template>
@@ -51,6 +52,9 @@ export default {
     },
     deleteMessage(msg) {
       this.$emit('delete', msg.id)
+    },
+    view(item) {
+      window.open('https://www.google.com', '_blank')
     }
   }
 }

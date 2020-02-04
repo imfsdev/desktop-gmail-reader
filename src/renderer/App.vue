@@ -8,7 +8,7 @@
         )
     .column
       mail-list(
-        :list="list"
+        :list="messages"
         @read="readMessage"
         @readAll="readAllMessages"
         @delete="deleteMessage"
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 
 import MailList from '@/components/MailList.vue'
 import Sidebar from '@/components/Sidebar.vue'
@@ -28,14 +28,18 @@ export default {
     MailList,
     Sidebar
   },
-  computed: mapGetters('mails', ['emails', 'list', 'selectedEmail']),
-  methods: mapActions('mails', [
-    'readMessage',
-    'readAllMessages',
-    'deleteMessage',
-    'deleteAllMessages',
-    'selectEmail'
-  ])
+  computed: mapGetters(['emails', 'messages', 'selectedEmail']),
+  methods: {
+    ...mapActions('mails', [
+      'readMessage',
+      'readAllMessages',
+      'deleteMessage',
+      'deleteAllMessages'
+    ]),
+    ...mapMutations({
+      selectEmail: 'accounts/SELECT'
+    })
+  }
 }
 </script>
 

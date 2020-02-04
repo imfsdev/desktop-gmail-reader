@@ -1,0 +1,48 @@
+import GmailService from '@/services/GmailService'
+
+const state = {
+  list: [],
+  selected: ''
+}
+
+const mutations = {
+  ADD_ACCOUNT(state, payload) {
+    const index = state.list.findIndex(acc => acc.email === payload.email)
+    if (index >= 0) {
+      state.splice(index, 1, payload)
+    } else {
+      state.list = [...state.list, payload]
+    }
+  },
+  UPDATE_ACCOUNT(state, payload) {
+    state.list = state.list.map(acc =>
+      acc.email === payload.email ? payload : acc
+    )
+  },
+  SELECT(state, email) {
+    state.selected = email
+  }
+}
+
+const actions = {
+  async addAccount({ commit }) {
+    try {
+      const token = await GmailService.googleSignIn()
+      const { auth } = await GmailService.getAuthFromToken(token)
+      const tokenInfo = await auth.getTokenInfo(token.access_token)
+      commit('ADD_ACCOUNT', {
+        email: tokenInfo.email,
+        token
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+}
+
+export default {
+  namespaced: true,
+  state,
+  actions,
+  mutations
+}
