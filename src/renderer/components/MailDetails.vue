@@ -12,7 +12,8 @@
         from-email(:from="details.from" size="large")
     .is-size-6.has-margin-top-2.has-margin-bottom-2 {{ details.subject }}
     .is-size-7.has-margin-bottom-3 To: {{ details.to }}
-    .is-size-6.text(v-html="details.text" ref="body")
+    .is-size-6.content
+      iframe(ref="body")
 </template>
 
 <script>
@@ -33,12 +34,17 @@ export default {
     if (!this.details.read) {
       this.$emit('read')
     }
-    const links = this.$refs.body.querySelectorAll('a[href]')
-    links.forEach(link => {
-      link.onclick = ev => {
-        alert(link.getAttribute('href'))
-        ev.preventDefault()
-      }
+    const iframedoc =
+      this.$refs.body.contentDocument || this.$refs.body.contentWindow.document
+    iframedoc.body.innerHTML = this.details.text
+    this.$nextTick(() => {
+      const links = iframedoc.querySelectorAll('a[href]')
+      links.forEach(link => {
+        link.onclick = ev => {
+          alert(link.getAttribute('href'))
+          ev.preventDefault()
+        }
+      })
     })
   }
 }
@@ -53,12 +59,15 @@ export default {
   top: 2em;
   right: 2em;
 }
-.text {
+.content {
   background: white;
-  color: black;
-  display: inline-block;
-  padding: 1em;
   word-break: break-word;
+  height: calc(100vh - 180px);
+
+  iframe {
+    width: 100%;
+    height: 100%;
+  }
 }
 .back {
   border-radius: 50%;
