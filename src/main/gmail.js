@@ -36,7 +36,7 @@ async function getAuthFromAccount(account) {
     if (newToken) {
       account.token = {
         ...newToken,
-        refresh_token: account.refresh_token
+        refresh_token: account.token.refresh_token
       }
     }
 
