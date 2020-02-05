@@ -1,4 +1,4 @@
-import GmailService from '@/services/GmailService'
+import GmailService from '../../services/GmailService'
 
 const state = {
   list: [],
@@ -7,6 +7,9 @@ const state = {
 }
 
 const mutations = {
+  SET_LIST(state, list) {
+    state.list = list
+  },
   ADD_ACCOUNT(state, payload) {
     const index = state.list.findIndex(acc => acc.email === payload.email)
     if (index >= 0) {
@@ -32,19 +35,15 @@ const mutations = {
 }
 
 const actions = {
-  async addAccount({ commit, dispatch }) {
-    const token = await GmailService.googleSignIn()
-    const { auth } = await GmailService.getAuthFromToken(token)
-    const tokenInfo = await auth.getTokenInfo(token.access_token)
-    commit('ADD_ACCOUNT', {
-      email: tokenInfo.email,
-      token
-    })
-    dispatch(
-      'mails/getMessages',
-      { auth, email: tokenInfo.email },
-      { root: true }
-    )
+  async addAccount({ commit }) {
+    const { err, account, messages } = await GmailService.addAccount()
+    if (err) {
+      console.log('Login failed', err.message)
+      return
+    }
+
+    commit('ADD_ACCOUNT', account)
+    commit('mails/ADD', messages)
   }
 }
 

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import GmailService from '../../services/GmailService'
-import { unionBy } from 'lodash'
+import { unionBy, values } from 'lodash'
 
 const state = {
   list: []
@@ -8,7 +8,7 @@ const state = {
 
 const mutations = {
   ADD(state, list) {
-    state.list = unionBy(state.list, list, 'id')
+    state.list = unionBy(list, state.list, 'id')
   },
   READ(state, msgId) {
     const msg = state.list.find(msg => msg.id === msgId)
@@ -36,40 +36,34 @@ const mutations = {
 const actions = {
   async readMessage({ commit, rootGetters }, msg) {
     const acc = rootGetters.accounts.find(acc => acc.email === msg.email)
-    const auth = await GmailService.getAuthFromTokenAndUpdate(
-      acc.token,
-      acc.email,
-      commit
-    )
-    await GmailService.readEmail(auth, msg.id)
+    const updatedAccount = await GmailService.readEmail(acc, msg.id)
+
+    commit('accounts/UPDATE_ACCOUNT', updatedAccount, { root: true })
     commit('READ', msg.id)
   },
   async readAllMessages({ commit, rootGetters }) {
     let emails = {}
     const msgList = rootGetters.messages.filter(msg => !msg.read)
-    for (let i = 0; i < msgList.length; i++) {
-      const msg = msgList[i]
-
+    msgList.forEach(msg => {
       if (emails[msg.email]) {
         emails[msg.email].msgIds.push(msg.id)
       } else {
         emails[msg.email] = {
-          msgIds: [msg.id]
+          msgIds: [msg.id],
+          account: rootGetters.accounts.find(acc => acc.email === msg.email)
         }
-        const acc = rootGetters.accounts.find(acc => acc.email === msg.email)
-        emails[msg.email].auth = await GmailService.getAuthFromTokenAndUpdate(
-          acc.token,
-          acc.email,
-          commit
-        )
       }
-    }
-
-    const accounts = Object.values(emails)
-    accounts.forEach(async ({ auth, msgIds }) => {
-      await GmailService.readMultipleEmails(auth, msgIds)
-      commit('READ_ALL', msgIds)
     })
+
+    const groups = await GmailService.readEmails(values(emails))
+
+    groups.forEach(group => {
+      commit('accounts/UPDATE_ACCOUNT', group.account, { root: true })
+    })
+    commit(
+      'READ_ALL',
+      msgList.map(msg => msg.id)
+    )
   },
   deleteAllMessages({ commit, rootGetters }) {
     const msgIds = rootGetters.messages
@@ -77,20 +71,13 @@ const actions = {
       .map(msg => msg.id)
     commit('DELETE_ALL', msgIds)
   },
-  async getMessages({ commit }, { auth, email }) {
-    const messages = await GmailService.getEmails(auth, email)
+  async getAllMessages({ rootGetters, commit }) {
+    const [accounts, messages] = await GmailService.fetchEmails(
+      rootGetters.accounts
+    )
     commit('ADD', messages)
-  },
-  getAllMessages({ rootGetters, dispatch, commit }) {
-    rootGetters.accounts.forEach(async acc => {
-      const auth = await GmailService.getAuthFromTokenAndUpdate(
-        acc.token,
-        acc.email,
-        commit
-      )
-      dispatch('getMessages', { auth, email: acc.email })
-      commit('accounts/SET_SYNCED_AT', new Date().getTime(), { root: true })
-    })
+    commit('accounts/SET_LIST', accounts, { root: true })
+    commit('accounts/SET_SYNCED_AT', new Date().getTime(), { root: true })
   }
 }
 
