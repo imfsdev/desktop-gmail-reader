@@ -6,7 +6,9 @@ import utils from './UtilsService'
 export default {
   googleSignIn,
   getAuthFromToken,
-  getEmails
+  getEmails,
+  readEmail,
+  readMultipleEmails
 }
 
 function googleSignIn() {
@@ -29,13 +31,19 @@ async function getAuthFromToken(token) {
 
   let newToken
   if (auth.isTokenExpiring()) {
-    newToken = await auth.refreshToken(token.refresh_token)
+    try {
+      const response = await auth.refreshToken(token.refresh_token)
+      newToken = response.tokens
+      newToken.refresh_token = token.refresh_token
+    } catch (err) {
+      console.log(err.message || 'Unknown error')
+    }
   }
 
   return { auth, newToken }
 }
 
-async function getEmails({ auth, email }) {
+async function getEmails(auth, email) {
   try {
     const gmail = google.gmail({ version: 'v1', auth })
 
@@ -113,4 +121,36 @@ async function getEmails({ auth, email }) {
   }
 
   return []
+}
+
+async function readEmail(auth, msgId) {
+  try {
+    const gmail = google.gmail({ version: 'v1', auth })
+
+    await gmail.users.messages.modify({
+      userId: 'me',
+      id: msgId,
+      requestBody: {
+        removeLabelIds: ['UNREAD']
+      }
+    })
+  } catch (err) {
+    console.log(err.message || 'Unknown error')
+  }
+}
+
+async function readMultipleEmails(auth, msgIds) {
+  try {
+    const gmail = google.gmail({ version: 'v1', auth })
+
+    await gmail.users.messages.batchModify({
+      userId: 'me',
+      requestBody: {
+        ids: msgIds,
+        removeLabelIds: ['UNREAD']
+      }
+    })
+  } catch (err) {
+    console.log(err.message || 'Unknown error')
+  }
 }

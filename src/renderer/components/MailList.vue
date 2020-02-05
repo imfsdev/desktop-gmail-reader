@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     readMessage(msg) {
-      this.$emit('read', msg.id)
+      this.$emit('read', msg)
     },
     deleteMessage(msg) {
       this.$emit('delete', msg.id)

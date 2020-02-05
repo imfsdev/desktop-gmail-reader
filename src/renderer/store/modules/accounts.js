@@ -20,9 +20,7 @@ const mutations = {
     )
   },
   REMOVE_ACCOUNT(state, payload) {
-    state.list = state.list.filter(acc =>
-      acc.email !== payload
-    )
+    state.list = state.list.filter(acc => acc.email !== payload)
   },
   SELECT(state, email) {
     state.selected = email
@@ -31,22 +29,18 @@ const mutations = {
 
 const actions = {
   async addAccount({ commit, dispatch }) {
-    try {
-      const token = await GmailService.googleSignIn()
-      const { auth } = await GmailService.getAuthFromToken(token)
-      const tokenInfo = await auth.getTokenInfo(token.access_token)
-      commit('ADD_ACCOUNT', {
-        email: tokenInfo.email,
-        token
-      })
-      dispatch(
-        'mails/getMessages',
-        { auth, email: tokenInfo.email },
-        { root: true }
-      )
-    } catch (err) {
-      console.log(err)
-    }
+    const token = await GmailService.googleSignIn()
+    const { auth } = await GmailService.getAuthFromToken(token)
+    const tokenInfo = await auth.getTokenInfo(token.access_token)
+    commit('ADD_ACCOUNT', {
+      email: tokenInfo.email,
+      token
+    })
+    dispatch(
+      'mails/getMessages',
+      { auth, email: tokenInfo.email },
+      { root: true }
+    )
   }
 }
 

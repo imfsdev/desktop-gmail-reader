@@ -47,20 +47,14 @@ export default {
   },
   mounted() {
     this.accounts.forEach(async acc => {
-      try {
-        const { auth, newToken } = await GmailService.getAuthFromToken(
-          acc.token
-        )
-        if (newToken) {
-          this.updateAccount({
-            email: acc.email,
-            token: newToken
-          })
-        }
-        this.getMessages({ auth, email: acc.email })
-      } catch (err) {
-        console.log(err)
+      const { auth, newToken } = await GmailService.getAuthFromToken(acc.token)
+      if (newToken) {
+        this.updateAccount({
+          email: acc.email,
+          token: newToken
+        })
       }
+      this.getMessages({ auth, email: acc.email })
     })
   }
 }
