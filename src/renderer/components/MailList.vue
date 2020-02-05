@@ -53,8 +53,8 @@ export default {
     deleteMessage(msg) {
       this.$emit('delete', msg.id)
     },
-    view(item) {
-      window.open('https://www.google.com', '_blank')
+    view(msg) {
+      this.$emit('view', msg)
     }
   }
 }

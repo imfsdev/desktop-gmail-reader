@@ -14,20 +14,34 @@
         @readAll="readAllMessages"
         @delete="deleteMessage"
         @deleteAll="deleteAllMessages"
+        @view="viewMessage"
+        v-if="!details"
         )
+      mail-details(
+        :details="details"
+        @close="closeDetails"
+        @read="readMessage(details)"
+        v-if="details")
 </template>
 
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 
 import MailList from '@/components/MailList.vue'
+import MailDetails from '@/components/MailDetails.vue'
 import Sidebar from '@/components/Sidebar.vue'
 
 export default {
   name: 'gmail-reader-desktop',
   components: {
     MailList,
+    MailDetails,
     Sidebar
+  },
+  data() {
+    return {
+      details: null
+    }
   },
   computed: mapGetters(['accounts', 'mailCounts', 'messages', 'selectedEmail']),
   methods: {
@@ -42,7 +56,18 @@ export default {
       updateAccount: 'accounts/UPDATE_ACCOUNT',
       removeAccount: 'accounts/REMOVE_ACCOUNT',
       deleteMessage: 'mails/DELETE'
-    })
+    }),
+    viewMessage(msg) {
+      this.details = msg
+    },
+    closeDetails() {
+      this.details = null
+    }
+  },
+  watch: {
+    selectedEmail() {
+      this.details = null
+    }
   }
 }
 </script>

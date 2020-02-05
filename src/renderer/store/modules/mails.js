@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import GmailService from '../../services/GmailService'
+import { unionBy } from 'lodash'
 
 const state = {
   list: []
@@ -7,7 +8,7 @@ const state = {
 
 const mutations = {
   ADD(state, list) {
-    state.list = [...state.list, ...list]
+    state.list = unionBy(state.list, list, 'id')
   },
   READ(state, msgId) {
     const msg = state.list.find(msg => msg.id === msgId)

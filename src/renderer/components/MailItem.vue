@@ -1,8 +1,6 @@
 <template lang="pug">
   .mail-item.has-padding-y-2(:class="{'read': item.read}" @click="$emit('open')")
-    span.from.is-size-6.has-text-weight-semibold
-      span.has-margin-right-2 {{ fromName }}
-      small.email {{ fromEmail }}
+    from-email(:from="item.from")
     .is-size-6 {{ item.subject }}
     .is-size-7.has-text-weight-semibold.has-margin-bottom-2 To: {{ item.to }}
     .snippet.is-size-7 {{ item.snippet }}
@@ -41,8 +39,13 @@
 </template>
 
 <script>
+import FromEmail from '@/components/FromEmail'
+
 export default {
   name: 'mail-item',
+  components: {
+    FromEmail
+  },
   props: {
     item: {
       type: Object,
