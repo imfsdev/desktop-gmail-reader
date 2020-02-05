@@ -18,9 +18,9 @@ export async function addAccount({ commit }) {
 export async function getAllMessages({ state, commit }) {
   commit('SET_LOADING', true)
   const accounts = state.accounts.filter(acc => acc.token)
-  const [accounts, messages] = await GmailService.fetchEmails(accounts)
+  const [newAccounts, messages] = await GmailService.fetchEmails(accounts)
   commit('ADD_MESSAGES', messages)
-  commit('UPSERT_ACCOUNTS', accounts)
+  commit('UPSERT_ACCOUNTS', newAccounts)
   commit('SET_SYNCED_AT', new Date().getTime())
   commit('SET_LOADING', false)
 }
@@ -28,6 +28,7 @@ export async function getAllMessages({ state, commit }) {
 export async function readMessage({ commit, state }, msg) {
   const acc = state.accounts.find(acc => acc.email === msg.email)
   if (!acc.token) {
+    commit('READ_MESSAGE', msg.id)
     return
   }
 

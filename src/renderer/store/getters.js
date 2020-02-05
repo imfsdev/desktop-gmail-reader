@@ -11,6 +11,8 @@ export default {
     })
     return result
   },
+  expiredEmails: state =>
+    state.accounts.filter(acc => !acc.token).map(acc => acc.email),
   filteredMessages: state =>
     state.messages.filter(
       msg => !state.selected || msg.email === state.selected

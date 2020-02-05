@@ -15,7 +15,7 @@
         b-button(
           type="is-info"
           icon-left="envelope-open-text"
-          @click="$emit('read')")
+          @click="readMessage")
       b-tooltip.has-margin-left-2(
         label="Delete"
         type="is-danger"
@@ -26,7 +26,7 @@
         b-button(
           type="is-danger"
           icon-left="trash-alt"
-          @click="$emit('delete')")
+          @click="deleteMessage")
 </template>
 
 <script>
@@ -51,6 +51,16 @@ export default {
     fromEmail() {
       const arr = this.item.from.split(' <')
       return '<' + arr[1].slice(0)
+    }
+  },
+  methods: {
+    readMessage(ev) {
+      ev.stopPropagation()
+      this.$emit('read')
+    },
+    deleteMessage(ev) {
+      ev.stopPropagation()
+      this.$emit('delete')
     }
   }
 }
