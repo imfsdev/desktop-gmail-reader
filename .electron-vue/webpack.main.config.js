@@ -6,7 +6,7 @@ const path = require('path')
 const { dependencies } = require('../package.json')
 const webpack = require('webpack')
 
-const MinifyPlugin = require("babel-minify-webpack-plugin")
+require('dotenv').config()
 
 let mainConfig = {
   entry: {
@@ -73,9 +73,10 @@ if (process.env.NODE_ENV !== 'production') {
  */
 if (process.env.NODE_ENV === 'production') {
   mainConfig.plugins.push(
-    new MinifyPlugin(),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"'
+      'process.env.NODE_ENV': '"production"',
+      'process.env.VUE_APP_GOOGLE_CLIENT_ID': `"${process.env.VUE_APP_GOOGLE_CLIENT_ID}"`,
+      'process.env.VUE_APP_GOOGLE_CLIENT_SECRET': `"${process.env.VUE_APP_GOOGLE_CLIENT_SECRET}"`
     })
   )
 }

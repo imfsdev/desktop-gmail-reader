@@ -5,7 +5,8 @@ export async function addAccount({ commit }) {
   commit('SET_LOADING', true)
   const { err, account, messages } = await GmailService.addAccount()
   if (err) {
-    console.log('Login failed', err.message)
+    commit('SET_LOADING', false)
+    console.log('Login failed', err)
     return
   }
 

@@ -3,8 +3,6 @@
 import { app, BrowserWindow } from 'electron'
 import './ipc'
 
-require('dotenv').config()
-
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -28,7 +26,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     height: 768,
     useContentSize: true,
-    width: 1000,
+    width: 1200,
     webPreferences: {
       nodeIntegration: true
     }
@@ -38,10 +36,6 @@ function createWindow() {
 
   mainWindow.on('closed', () => {
     mainWindow = null
-  })
-
-  mainWindow.webContents.once('devtools-opened', () => {
-    mainWindow.webContents.closeDevTools()
   })
 
   mainWindow.webContents.session.webRequest.onBeforeRequest(
