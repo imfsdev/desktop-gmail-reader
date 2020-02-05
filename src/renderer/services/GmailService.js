@@ -6,6 +6,7 @@ import utils from './UtilsService'
 export default {
   googleSignIn,
   getAuthFromToken,
+  getAuthFromTokenAndUpdate,
   getEmails,
   readEmail,
   readMultipleEmails
@@ -41,6 +42,34 @@ async function getAuthFromToken(token) {
   }
 
   return { auth, newToken }
+}
+
+async function getAuthFromTokenAndUpdate(token, email, commit) {
+  const auth = new google.auth.OAuth2(
+    process.env.VUE_APP_GOOGLE_CLIENT_ID,
+    process.env.VUE_APP_GOOGLE_CLIENT_SECRET,
+    'http://localhost:42813/callback'
+  )
+  auth.setCredentials(token)
+
+  let newToken
+  if (auth.isTokenExpiring()) {
+    try {
+      const response = await auth.refreshToken(token.refresh_token)
+      newToken = response.tokens
+      newToken.refresh_token = token.refresh_token
+
+      commit(
+        'accounts/UPDATE_ACCOUNT',
+        { email, token: newToken },
+        { root: true }
+      )
+    } catch (err) {
+      console.log(err.message || 'Unknown error')
+    }
+  }
+
+  return auth
 }
 
 async function getEmails(auth, email) {

@@ -27,27 +27,21 @@ const mutations = {
   DELETE(state, msgId) {
     state.list = state.list.filter(msg => msg.id !== msgId)
   },
-  DELETE_ALL(state) {
-    state.list = []
+  DELETE_ALL(state, msgIds) {
+    state.list = state.list.filter(msg => msgIds.indexOf(msg.id) < 0)
   }
 }
 
 const actions = {
   async readMessage({ commit, rootGetters }, msg) {
     const acc = rootGetters.accounts.find(acc => acc.email === msg.email)
-    const { auth, newToken } = await GmailService.getAuthFromToken(acc.token)
-    if (newToken) {
-      commit(
-        'accounts/UPDATE_ACCOUNT',
-        { email: acc.email, token: newToken },
-        { root: true }
-      )
-    }
+    const auth = await GmailService.getAuthFromTokenAndUpdate(
+      acc.token,
+      acc.email,
+      commit
+    )
     await GmailService.readEmail(auth, msg.id)
     commit('READ', msg.id)
-  },
-  deleteMessage({ commit }, msgId) {
-    commit('DELETE', msgId)
   },
   async readAllMessages({ commit, rootGetters }) {
     let emails = {}
@@ -62,33 +56,39 @@ const actions = {
           msgIds: [msg.id]
         }
         const acc = rootGetters.accounts.find(acc => acc.email === msg.email)
-        const { auth, newToken } = await GmailService.getAuthFromToken(acc.token)
-        if (newToken) {
-          commit(
-            'accounts/UPDATE_ACCOUNT',
-            { email: msg.email, token: newToken },
-            { root: true }
-          )
-        }
-        emails[msg.email].auth = auth
+        emails[msg.email].auth = await GmailService.getAuthFromTokenAndUpdate(
+          acc.token,
+          acc.email,
+          commit
+        )
       }
     }
 
     const accounts = Object.values(emails)
     accounts.forEach(async ({ auth, msgIds }) => {
       await GmailService.readMultipleEmails(auth, msgIds)
+      commit('READ_ALL', msgIds)
     })
-    commit(
-      'READ_ALL',
-      msgList.map(msg => msg.id)
-    )
   },
-  deleteAllMessages({ commit }) {
-    commit('DELETE_ALL')
+  deleteAllMessages({ commit, rootGetters }) {
+    const msgIds = rootGetters.messages
+      .filter(msg => msg.read)
+      .map(msg => msg.id)
+    commit('DELETE_ALL', msgIds)
   },
   async getMessages({ commit }, { auth, email }) {
     const messages = await GmailService.getEmails(auth, email)
     commit('ADD', messages)
+  },
+  getAllMessages({ rootGetters, dispatch, commit }) {
+    rootGetters.accounts.forEach(async acc => {
+      const auth = await GmailService.getAuthFromTokenAndUpdate(
+        acc.token,
+        acc.email,
+        commit
+      )
+      dispatch('getMessages', { auth, email: acc.email })
+    })
   }
 }
 

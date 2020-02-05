@@ -22,7 +22,6 @@ import { mapActions, mapGetters, mapMutations } from 'vuex'
 
 import MailList from '@/components/MailList.vue'
 import Sidebar from '@/components/Sidebar.vue'
-import GmailService from '@/services/GmailService'
 
 export default {
   name: 'gmail-reader-desktop',
@@ -35,27 +34,19 @@ export default {
     ...mapActions('mails', [
       'readMessage',
       'readAllMessages',
-      'deleteMessage',
-      'deleteAllMessages',
-      'getMessages'
+      'getMessages',
+      'getAllMessages',
+      'deleteAllMessages'
     ]),
     ...mapMutations({
       selectEmail: 'accounts/SELECT',
       updateAccount: 'accounts/UPDATE_ACCOUNT',
-      removeAccount: 'accounts/REMOVE_ACCOUNT'
+      removeAccount: 'accounts/REMOVE_ACCOUNT',
+      deleteMessage: 'mails/DELETE'
     })
   },
   mounted() {
-    this.accounts.forEach(async acc => {
-      const { auth, newToken } = await GmailService.getAuthFromToken(acc.token)
-      if (newToken) {
-        this.updateAccount({
-          email: acc.email,
-          token: newToken
-        })
-      }
-      this.getMessages({ auth, email: acc.email })
-    })
+    this.getAllMessages()
   }
 }
 </script>
