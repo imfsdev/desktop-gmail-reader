@@ -2,8 +2,8 @@ import Vue from 'vue'
 import { unionBy } from 'lodash'
 
 export default {
-  SET_ACCOUNTS(state, accounts) {
-    state.accounts = accounts
+  UPSERT_ACCOUNTS(state, accounts) {
+    state.accounts = unionBy(accounts, state.accounts, 'email')
   },
   UPSERT_ACCOUNT(state, account) {
     state.accounts = unionBy([account], state.accounts, 'email')
