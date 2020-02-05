@@ -62,9 +62,7 @@ export default {
     ...mapMutations({
       selectAccount: 'SELECT_ACCOUNT',
       removeAccount: 'REMOVE_ACCOUNT',
-      removeMessage: 'REMOVE_MESSAGE',
-      addAccount: 'UPSERT_ACCOUNT',
-      addMessages: 'ADD_MESSAGES'
+      removeMessage: 'REMOVE_MESSAGE'
     }),
     viewMessage(msg) {
       this.details = msg
@@ -77,24 +75,6 @@ export default {
     selected() {
       this.details = null
     }
-  },
-  mounted() {
-    this.addAccount({
-      email: 'test@test.com',
-      token: null
-    })
-    this.addMessages([{
-      email: 'test@test.com',
-      id: '11111',
-      threadId: '34343434',
-      labels: ['UNREAD'],
-      snippet: 'TEST TEST',
-      internalDate: new Date(),
-      subject: 'Test Message',
-      from: 'abc <abc@test.com>',
-      to: 'test <test@test.com>',
-      text: 'This is test message'
-    }])
   }
 }
 </script>
