@@ -5,19 +5,12 @@
     .is-size-7.has-margin-bottom-3 To: {{ details.to }}
     .is-size-6.text(v-html="details.text")
     .actions
-      b-button.has-margin-right-3(
-        class="has-margin-right-2"
-        type="is-info"
-        icon-left="envelope-open-text"
-        :disabled="details.read"
-        @click="$emit('read')"
-        ) Mark as Read
-      b-button(
+      b-button.close(
         type="is-danger"
         icon-left="times"
         outlined
         @click="$emit('close')"
-        ) Close
+        )
 </template>
 
 <script>
@@ -32,6 +25,11 @@ export default {
     details: {
       type: Object,
       required: true
+    }
+  },
+  mounted() {
+    if (!this.details.read) {
+      this.$emit('read')
     }
   }
 }
@@ -52,5 +50,8 @@ export default {
   display: inline-block;
   padding: 1em;
   word-break: break-word;
+}
+.close {
+  border-radius: 50%;
 }
 </style>

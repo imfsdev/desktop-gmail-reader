@@ -25,7 +25,7 @@
       outlined
       @click="getAllMessages()"
       ) Sync
-    .has-margin-top-3.is-full-width
+    .has-margin-top-3.is-full-width.synced
       span.has-margin-right-2 Synced:
       span.has-text-weight-semibold.has-text-grey-lighter {{ syncedTime }}
 </template>
@@ -114,5 +114,8 @@ export default {
   right: 4px;
   height: 24px;
   width: 24px;
+}
+.synced {
+  text-align: center;
 }
 </style>

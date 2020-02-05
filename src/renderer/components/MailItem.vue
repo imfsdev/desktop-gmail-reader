@@ -1,19 +1,10 @@
 <template lang="pug">
-  .mail-item.has-padding-y-2(:class="{'read': item.read}" @click="$emit('open')")
+  .mail-item.has-padding-y-2(:class="{'read': item.read}" @click="$emit('view')")
     from-email(:from="item.from")
     .is-size-6 {{ item.subject }}
     .is-size-7.has-text-weight-semibold.has-margin-bottom-2 To: {{ item.to }}
     .snippet.is-size-7 {{ item.snippet }}
     .actions.has-padding-right-2
-      b-tooltip(
-        label="View"
-        position="is-bottom"
-        type="is-white"
-        animated
-        )
-        b-button(
-          icon-left="eye"
-          @click="$emit('view')")
       b-tooltip.has-margin-left-2(
         label="Mark as Read"
         position="is-bottom"
@@ -68,6 +59,7 @@ export default {
 <style lang="scss" scoped>
 .mail-item {
   border-bottom: 1px solid $grey;
+  cursor: pointer;
   position: relative;
 
   .email {
