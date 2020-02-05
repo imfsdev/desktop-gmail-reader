@@ -46,12 +46,15 @@ function createWindow() {
 
   mainWindow.webContents.session.webRequest.onBeforeRequest(
     (details, callback1) => {
-      const whiteList = ['//devtools/', '/localhost:9080/']
-      if (whiteList.some(str => details.url.indexOf(str) >= 0)) {
+      const whiteList = [
+        'devtools://devtools/',
+        'http://localhost:9080/',
+        'ws://localhost:9080/',
+        'file://'
+      ]
+      if (whiteList.some(str => details.url.startsWith(str))) {
         callback1({ cancel: false })
-        console.log('passed', details.resourceType, details.url)
       } else {
-        console.log('blocked', details.resourceType, details.url)
         callback1({ cancel: true })
       }
     }
