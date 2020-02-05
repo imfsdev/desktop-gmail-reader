@@ -12,7 +12,8 @@ const state = {
   accounts: [],
   selected: '',
   syncedAt: 0,
-  messages: []
+  messages: [],
+  loading: false
 }
 
 export default new Vuex.Store({

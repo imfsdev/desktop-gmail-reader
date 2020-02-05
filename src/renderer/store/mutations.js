@@ -40,5 +40,8 @@ export default {
   },
   REMOVE_MESSAGES(state, msgIds) {
     state.messages = state.messages.filter(msg => msgIds.indexOf(msg.id) < 0)
+  },
+  SET_LOADING(state, loading) {
+    state.loading = loading
   }
 }

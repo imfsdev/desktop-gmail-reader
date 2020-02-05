@@ -22,6 +22,10 @@
         @close="closeDetails"
         @read="readMessage(details)"
         v-if="details")
+    b-loading(
+      :is-full-page="true"
+      :active.sync="loading"  
+      )
 </template>
 
 <script>
@@ -44,7 +48,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['selected']),
+    ...mapState(['selected', 'loading']),
     ...mapGetters(['mailCounts', 'filteredMessages'])
   },
   methods: {
