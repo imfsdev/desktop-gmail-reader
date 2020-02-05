@@ -26,7 +26,7 @@ function createWindow() {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
+    height: 768,
     useContentSize: true,
     width: 1000,
     webPreferences: {
@@ -38,6 +38,10 @@ function createWindow() {
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+
+  mainWindow.webContents.once('devtools-opened', () => {
+    mainWindow.webContents.closeDevTools()
   })
 }
 

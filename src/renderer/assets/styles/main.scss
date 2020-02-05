@@ -22,6 +22,10 @@ html, body {
   background-color: $black-ter;
 }
 
+html {
+  overflow-y: auto;
+}
+
 #app {
   height: 100%;
 }
