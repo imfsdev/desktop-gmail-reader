@@ -43,7 +43,7 @@ const actions = {
     }
 
     commit('ADD_ACCOUNT', account)
-    commit('mails/ADD', messages)
+    commit('mails/ADD', messages, { root: true })
   }
 }
 

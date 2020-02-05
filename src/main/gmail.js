@@ -79,7 +79,7 @@ export async function getAuthFromToken(token) {
  */
 export async function getTokenInfo(token) {
   try {
-    const { auth } = getAuthFromToken(token)
+    const { auth } = await getAuthFromToken(token)
     const tokenInfo = await auth.getTokenInfo(token.access_token)
     return tokenInfo
   } catch (err) {

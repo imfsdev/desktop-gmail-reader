@@ -47,6 +47,10 @@ export default {
   right: 2em;
 }
 .text {
+  background: white;
+  color: black;
+  display: inline-block;
+  padding: 1em;
   word-break: break-word;
 }
 </style>
