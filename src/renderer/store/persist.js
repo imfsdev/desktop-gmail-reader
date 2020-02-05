@@ -5,7 +5,8 @@ const vuexLocal = new VuexPersistence({
   modules: ['accounts'],
   filter: mutation =>
     mutation.type === 'accounts/UPDATE_ACCOUNT' ||
-    mutation.type === 'accounts/ADD_ACCOUNT'
+    mutation.type === 'accounts/ADD_ACCOUNT' ||
+    mutation.type === 'accounts/REMOVE_ACCOUNT'
 })
 
 export default vuexLocal

@@ -13,6 +13,7 @@
       )
       span {{ item }}
       span.badge(v-if="emails[item] > 0") {{ emails[item] }}
+      b-button.remove(icon-left="times-circle" @click="$emit('remove', item)")
     b-button.has-margin-top-4.is-full-width(
       type="is-info"
       icon-left="plus-circle"
@@ -60,11 +61,25 @@ export default {
   border-bottom: 1px solid rgba($grey, 0.3);
   display: flex;
   justify-content: space-between;
+  position: relative;
+
+  .remove {
+    opacity: 0;
+  }
 
   &:hover,
   &.selected {
     background: rgba($grey, 0.1);
     color: $white-ter;
+  }
+
+  &:hover {
+    .remove {
+      opacity: 0.8;
+    }
+    .badge {
+      opacity: 0;
+    }
   }
 }
 .badge {
@@ -72,5 +87,16 @@ export default {
   border-radius: 0.7em;
   font-size: 0.75rem;
   padding: 0.1rem 0.5rem;
+}
+.remove {
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: white !important;
+  padding: 0px;
+  position: absolute;
+  right: 4px;
+  height: 24px;
+  width: 24px;
 }
 </style>

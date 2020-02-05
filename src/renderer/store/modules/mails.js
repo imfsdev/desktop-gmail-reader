@@ -1,47 +1,8 @@
 import Vue from 'vue'
+import GmailService from '@/services/GmailService'
 
 const state = {
-  list: [
-    // {
-    //   id: '16e90b992d2876c3',
-    //   threadId: '16e9062ce133b10c',
-    //   labels: ['IMPORTANT', 'CATEGORY_PERSONAL', 'INBOX'],
-    //   snippet:
-    //     'Google APIs Explorer was granted access to your Google Account If you did not grant access, you should check this activity and secure your account. Check activity You received ...',
-    //   internalDate: '1574386109000',
-    //   subject: 'Security alert',
-    //   from: 'Google \u003cno-reply@accounts.google.com\u003e',
-    //   to: 'abc@test.com',
-    //   text:
-    //     'Google APIs Explorer was granted access to your Google Account If you did not grant access, you should check this activity and secure your account. Check activity'
-    // },
-    // {
-    //   id: '16e90b992d2876c4',
-    //   threadId: '16e9062ce133b10c',
-    //   labels: ['IMPORTANT', 'CATEGORY_PERSONAL', 'INBOX'],
-    //   snippet:
-    //     'Google APIs Explorer was granted access to your Google Account If you did not grant access, you should check this activity and secure your account. Check activity You received ...',
-    //   internalDate: '1574386109000',
-    //   subject: 'Security alert',
-    //   from: 'Google \u003cno-reply@accounts.google.com\u003e',
-    //   to: 'abc@test.com',
-    //   text:
-    //     'Google APIs Explorer was granted access to your Google Account If you did not grant access, you should check this activity and secure your account. Check activity'
-    // },
-    // {
-    //   id: '16e90b992d2876c5',
-    //   threadId: '16e9062ce133b10c',
-    //   labels: ['IMPORTANT', 'CATEGORY_PERSONAL', 'INBOX'],
-    //   snippet:
-    //     'Google APIs Explorer was granted access to your Google Account If you did not grant access, you should check this activity and secure your account. Check activity You received ...',
-    //   internalDate: '1574386109000',
-    //   subject: 'Security alert',
-    //   from: 'Google \u003cno-reply@accounts.google.com\u003e',
-    //   to: 'dfe@test.com',
-    //   text:
-    //     'Google APIs Explorer was granted access to your Google Account If you did not grant access, you should check this activity and secure your account. Check activity'
-    // }
-  ]
+  list: []
 }
 
 const mutations = {
@@ -75,6 +36,14 @@ const actions = {
   },
   deleteAllMessages({ commit }) {
     commit('DELETE_ALL')
+  },
+  async getMessages({ commit }, payload) {
+    try {
+      const messages = await GmailService.getEmails(payload)
+      commit('ADD', messages)
+    } catch (err) {
+      console.log(err)
+    }
   }
 }
 
