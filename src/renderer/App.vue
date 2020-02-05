@@ -3,17 +3,17 @@
     .column.is-narrow
       sidebar(
         :emails="mailCounts"
-        :selected="selectedEmail"
-        @select="selectEmail"
+        :selected="selected"
+        @select="selectAccount"
         @remove="removeAccount"
         )
     .column
       mail-list(
-        :list="messages"
+        :list="filteredMessages"
         @read="readMessage"
-        @readAll="readAllMessages"
-        @delete="deleteMessage"
-        @deleteAll="deleteAllMessages"
+        @readAll="readAllFilteredMessages"
+        @delete="removeMessage"
+        @deleteAll="removeReadFilteredMessages"
         @view="viewMessage"
         v-if="!details"
         )
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 import MailList from '@/components/MailList.vue'
 import MailDetails from '@/components/MailDetails.vue'
@@ -43,19 +43,21 @@ export default {
       details: null
     }
   },
-  computed: mapGetters(['accounts', 'mailCounts', 'messages', 'selectedEmail']),
+  computed: {
+    ...mapState(['selected']),
+    ...mapGetters(['mailCounts', 'filteredMessages'])
+  },
   methods: {
-    ...mapActions('mails', [
+    ...mapActions([
       'readMessage',
-      'readAllMessages',
-      'getMessages',
-      'deleteAllMessages'
+      'readAllFilteredMessages',
+      'getAllMessages',
+      'removeReadFilteredMessages'
     ]),
     ...mapMutations({
-      selectEmail: 'accounts/SELECT',
-      updateAccount: 'accounts/UPDATE_ACCOUNT',
-      removeAccount: 'accounts/REMOVE_ACCOUNT',
-      deleteMessage: 'mails/DELETE'
+      selectAccount: 'SELECT_ACCOUNT',
+      removeAccount: 'REMOVE_ACCOUNT',
+      removeMessage: 'REMOVE_MESSAGE'
     }),
     viewMessage(msg) {
       this.details = msg
@@ -65,7 +67,7 @@ export default {
     }
   },
   watch: {
-    selectedEmail() {
+    selected() {
       this.details = null
     }
   }

@@ -46,7 +46,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('accounts', ['syncedAt']),
+    ...mapState(['syncedAt']),
     list() {
       return Object.keys(this.emails)
     },
@@ -59,8 +59,8 @@ export default {
     }
   },
   methods: mapActions({
-    addAccount: 'accounts/addAccount',
-    getAllMessages: 'mails/getAllMessages'
+    addAccount: 'addAccount',
+    getAllMessages: 'getAllMessages'
   })
 }
 </script>
