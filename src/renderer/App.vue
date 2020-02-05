@@ -35,7 +35,6 @@ export default {
       'readMessage',
       'readAllMessages',
       'getMessages',
-      'getAllMessages',
       'deleteAllMessages'
     ]),
     ...mapMutations({
@@ -44,9 +43,6 @@ export default {
       removeAccount: 'accounts/REMOVE_ACCOUNT',
       deleteMessage: 'mails/DELETE'
     })
-  },
-  mounted() {
-    this.getAllMessages()
   }
 }
 </script>
