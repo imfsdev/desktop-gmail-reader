@@ -1,16 +1,18 @@
 <template lang="pug">
   .container.is-fluid.has-padding-4
-    from-email(:from="details.from" size="large")
+    .columns.is-mobile.is-gapless.is-vcentered.has-margin-bottom-0
+      .column.is-narrow
+        b-button.back(
+          type="is-dark"
+          icon-left="arrow-left"
+          outlined
+          @click="$emit('close')"
+          )
+      .column
+        from-email(:from="details.from" size="large")
     .is-size-6.has-margin-top-2.has-margin-bottom-2 {{ details.subject }}
     .is-size-7.has-margin-bottom-3 To: {{ details.to }}
-    .is-size-6.text(v-html="details.text")
-    .actions
-      b-button.close(
-        type="is-danger"
-        icon-left="times"
-        outlined
-        @click="$emit('close')"
-        )
+    .is-size-6.text(v-html="details.text" ref="body")
 </template>
 
 <script>
@@ -31,11 +33,18 @@ export default {
     if (!this.details.read) {
       this.$emit('read')
     }
+    const links = this.$refs.body.querySelectorAll('a[href]')
+    links.forEach(link => {
+      link.onclick = ev => {
+        alert(link.getAttribute('href'))
+        ev.preventDefault()
+      }
+    })
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .container {
   position: relative;
 }
@@ -51,7 +60,12 @@ export default {
   padding: 1em;
   word-break: break-word;
 }
-.close {
+.back {
   border-radius: 50%;
+  margin-right: 0.5em;
+
+  &.button.is-dark.is-outlined {
+    color: $grey-light;
+  }
 }
 </style>
