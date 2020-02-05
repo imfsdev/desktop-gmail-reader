@@ -19,10 +19,19 @@
       icon-left="plus-circle"
       @click="addAccount()"
       ) Add
+    b-button.has-margin-top-3.is-full-width(
+      icon-left="sync"
+      type="is-warning"
+      outlined
+      @click="getAllMessages()"
+      ) Sync
+    .has-margin-top-3.is-full-width
+      span.has-margin-right-2 Synced:
+      span.has-text-weight-semibold.has-text-grey-lighter {{ syncedTime }}
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'sidebar',
@@ -37,15 +46,22 @@ export default {
     }
   },
   computed: {
+    ...mapState('accounts', ['syncedAt']),
     list() {
       return Object.keys(this.emails)
     },
     allCount() {
       const counts = Object.values(this.emails)
       return counts.reduce((acc, c) => acc + c, 0)
+    },
+    syncedTime() {
+      return new Date(this.syncedAt).toLocaleString()
     }
   },
-  methods: mapActions('accounts', ['addAccount'])
+  methods: mapActions({
+    addAccount: 'accounts/addAccount',
+    getAllMessages: 'mails/getAllMessages'
+  })
 }
 </script>
 

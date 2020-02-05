@@ -2,7 +2,8 @@ import GmailService from '@/services/GmailService'
 
 const state = {
   list: [],
-  selected: ''
+  selected: '',
+  syncedAt: 0
 }
 
 const mutations = {
@@ -24,6 +25,9 @@ const mutations = {
   },
   SELECT(state, email) {
     state.selected = email
+  },
+  SET_SYNCED_AT(state, time) {
+    state.syncedAt = time
   }
 }
 

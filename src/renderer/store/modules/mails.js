@@ -88,6 +88,7 @@ const actions = {
         commit
       )
       dispatch('getMessages', { auth, email: acc.email })
+      commit('accounts/SET_SYNCED_AT', new Date().getTime(), { root: true })
     })
   }
 }
