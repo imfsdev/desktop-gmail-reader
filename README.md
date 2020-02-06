@@ -2,6 +2,8 @@
 
 > Gmail Reader Application built with Electron Vue
 
+![Screenshot](https://github.com/fullstackdevs14/gmail-reader-desktop/blob/master/screenshot.png)
+
 #### Build Setup
 
 ``` bash
