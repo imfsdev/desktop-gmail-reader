@@ -45,7 +45,7 @@ export default {
       saveConfig: 'config/save'
     }),
     save() {
-      this.save({
+      this.saveConfig({
         sync: this.radioVal,
         interval: this.intervalVal
       })
@@ -54,11 +54,6 @@ export default {
   mounted() {
     this.radioVal = this.sync
     this.intervalVal = this.interval
-  },
-  watch: {
-    radioVal(newVal) {
-      this.setSync(newVal)
-    }
   }
 }
 </script>
