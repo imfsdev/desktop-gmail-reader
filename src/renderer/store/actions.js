@@ -15,14 +15,26 @@ export async function addAccount({ commit }) {
   commit('SET_LOADING', false)
 }
 
-export async function getAllMessages({ state, commit }) {
-  commit('SET_LOADING', true)
+export async function getAllMessages({ state, commit }, hideLoading) {
+  if (!hideLoading) {
+    commit('SET_LOADING', true)
+  }
   const accounts = state.accounts.filter(acc => acc.token)
   const [newAccounts, messages] = await GmailService.fetchEmails(accounts)
   commit('ADD_MESSAGES', messages)
   commit('UPSERT_ACCOUNTS', newAccounts)
   commit('SET_SYNCED_AT', new Date().getTime())
-  commit('SET_LOADING', false)
+
+  if (state.config.sync === 'auto' && messages.length > 0) {
+    // eslint-disable-next-line
+    new Notification(`Gmail Reader`, {
+      body: `${messages.length} new email(s) arrived`
+    })
+  }
+
+  if (!hideLoading) {
+    commit('SET_LOADING', false)
+  }
 }
 
 export async function readMessage({ commit, state }, msg) {
@@ -74,4 +86,20 @@ export function removeReadFilteredMessages({ commit, getters }) {
     .filter(msg => msg.read)
     .map(msg => msg.id)
   commit('REMOVE_MESSAGES', msgIds)
+}
+
+let timer
+export function autoSync({ dispatch, state }) {
+  if (state.config.sync === 'auto') {
+    if (timer) {
+      clearInterval(timer)
+    }
+
+    const interval = (+state.config.interval || 30) * 1000
+    timer = setInterval(() => {
+      dispatch('getAllMessages', true)
+    }, interval)
+  } else {
+    clearInterval(timer)
+  }
 }

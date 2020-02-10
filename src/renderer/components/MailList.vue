@@ -1,5 +1,5 @@
 <template lang="pug">
-  .container.is-fluid.has-padding-4
+  .has-padding-4
     .list-toolbar.has-padding-bottom-3
       b-button(
         class="has-margin-right-2"

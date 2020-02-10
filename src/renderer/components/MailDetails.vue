@@ -1,5 +1,5 @@
 <template lang="pug">
-  .container.is-fluid.has-padding-4
+  .has-padding-4
     .columns.is-mobile.is-gapless.is-vcentered.has-margin-bottom-0
       .column.is-narrow
         b-button.back(

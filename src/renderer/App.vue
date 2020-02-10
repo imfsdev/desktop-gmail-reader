@@ -5,8 +5,9 @@
         :counts="mailCounts"
         :selected="selected"
         :expiredEmails="expiredEmails"
-        @select="selectAccount"
+        @select="viewAccMessages"
         @remove="removeAccount"
+        @settings="view = 'settings'"
         )
     .column
       mail-list(
@@ -16,13 +17,17 @@
         @delete="removeMessage"
         @deleteAll="removeReadFilteredMessages"
         @view="viewMessage"
-        v-if="!details"
+        v-if="view === 'list'"
         )
       mail-details(
         :details="details"
         @close="closeDetails"
         @read="readMessage(details)"
-        v-if="details")
+        v-if="view === 'details'")
+      settings(
+        @back="view = 'list'"
+        v-if="view === 'settings'"
+        )
     b-loading(
       :is-full-page="true"
       :active.sync="loading"  
@@ -35,21 +40,25 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import MailList from '@/components/MailList.vue'
 import MailDetails from '@/components/MailDetails.vue'
 import Sidebar from '@/components/Sidebar.vue'
+import Settings from '@/components/Settings.vue'
 
 export default {
   name: 'gmail-reader-desktop',
   components: {
     MailList,
     MailDetails,
-    Sidebar
+    Sidebar,
+    Settings
   },
   data() {
     return {
-      details: null
+      details: null,
+      view: 'list'
     }
   },
   computed: {
     ...mapState(['selected', 'loading']),
+    ...mapState('config', ['sync', 'interval']),
     ...mapGetters(['mailCounts', 'expiredEmails', 'filteredMessages'])
   },
   methods: {
@@ -57,7 +66,8 @@ export default {
       'readMessage',
       'readAllFilteredMessages',
       'getAllMessages',
-      'removeReadFilteredMessages'
+      'removeReadFilteredMessages',
+      'autoSync'
     ]),
     ...mapMutations({
       selectAccount: 'SELECT_ACCOUNT',
@@ -66,14 +76,24 @@ export default {
     }),
     viewMessage(msg) {
       this.details = msg
+      this.view = 'details'
     },
     closeDetails() {
-      this.details = null
+      this.view = 'list'
+    },
+    viewAccMessages(email) {
+      this.selectAccount(email)
+      this.view = 'list'
     }
   },
   watch: {
     selected() {
       this.details = null
+    }
+  },
+  mounted() {
+    if (this.sync === 'auto') {
+      this.autoSync()
     }
   }
 }

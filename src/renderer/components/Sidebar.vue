@@ -20,14 +20,25 @@
       @click="addAccount()"
       ) Add
     b-button.has-margin-top-3.is-full-width(
+      icon-left="cog"
+      type="is-white"
+      outlined
+      @click="$emit('settings')"
+      ) Settings
+    b-button.has-margin-top-3.is-full-width(
       icon-left="sync"
       type="is-warning"
       outlined
       @click="getAllMessages()"
+      v-if="sync === 'manual'"
       ) Sync
-    .has-margin-top-4.is-full-width.synced
-      span.has-margin-right-2 Synced:
-      span.has-text-weight-semibold.has-text-grey-lighter {{ syncedTime }}
+    .has-margin-top-4.center
+      .has-text-weight-bold(
+        v-if="sync === 'auto'"
+        ) Auto sync: {{ interval }} secs
+      .is-full-width.has-margin-top-2
+        span.has-margin-right-2 Synced:
+        span.has-text-weight-semibold.has-text-grey-lighter {{ syncedTime }}
     .expired-list.has-margin-top-4(v-if="expiredEmails.length > 0")
       .has-padding-2.has-margin-y-2 Expired Emails
       .item.has-padding-2.has-text-grey-light(
@@ -61,6 +72,7 @@ export default {
   },
   computed: {
     ...mapState(['syncedAt']),
+    ...mapState('config', ['sync', 'interval']),
     list() {
       return Object.keys(this.counts).filter(
         item => this.expiredEmails.indexOf(item) < 0
@@ -131,7 +143,7 @@ export default {
   height: 24px;
   width: 24px;
 }
-.synced {
+.center {
   text-align: center;
 }
 .expired-list {
