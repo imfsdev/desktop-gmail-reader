@@ -5,7 +5,7 @@ export default {
       result[acc.email] = 0
     })
     state.messages.forEach(msg => {
-      if (!msg.read) {
+      if (!msg.read && result[msg.email] !== undefined) {
         result[msg.email]++
       }
     })

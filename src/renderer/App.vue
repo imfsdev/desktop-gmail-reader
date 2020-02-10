@@ -6,7 +6,7 @@
         :selected="selected"
         :expiredEmails="expiredEmails"
         @select="viewAccMessages"
-        @remove="removeAccount"
+        @remove="showConfirmDialog"
         @settings="view = 'settings'"
         )
     .column
@@ -32,6 +32,21 @@
       :is-full-page="true"
       :active.sync="loading"  
       )
+    b-modal(
+      :active.sync="showConfirm"
+      has-modal-card
+      trap-focus
+      )
+      .modal-card
+        header.modal-card-head
+          .modal-card-title Remove account
+        section.modal-card-body.has-text-grey-dark Do you want to remove this account?
+        footer.modal-card-foot
+          b-button(
+            type="is-danger"
+            @click="confirmRemoveAccount"
+            ) Yes
+          b-button(outlined @click="showConfirm = false") No
 </template>
 
 <script>
@@ -53,7 +68,9 @@ export default {
   data() {
     return {
       details: null,
-      view: 'list'
+      view: 'list',
+      showConfirm: false,
+      msgId: ''
     }
   },
   computed: {
@@ -84,6 +101,14 @@ export default {
     viewAccMessages(email) {
       this.selectAccount(email)
       this.view = 'list'
+    },
+    showConfirmDialog(email) {
+      this.email = email
+      this.showConfirm = true
+    },
+    confirmRemoveAccount() {
+      this.showConfirm = false
+      this.removeAccount(this.email)
     }
   },
   watch: {
@@ -100,3 +125,13 @@ export default {
 </script>
 
 <style lang="scss" src="@/assets/styles/main.scss"></style>
+
+<style lang="scss" scoped>
+.modal-card-foot {
+  justify-content: flex-end;
+
+  .button {
+    width: 60px;
+  }
+}
+</style>

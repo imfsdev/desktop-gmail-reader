@@ -18,9 +18,10 @@
         icon-left="save"
         @click="save()"
         ) Save
-      b-button(
-        type="is-danger"
+      b-button.cancel-button(
+        type="is-white"
         icon-left="times"
+        outlined
         @click="$emit('back')"
         ) Cancel
 </template>
@@ -74,5 +75,10 @@ export default {
     color: $white-ter;
     width: 60px;
   }
+}
+</style>
+<style lang="scss" scoped>
+.button.is-white.cancel-button {
+  border-color: $grey-dark;
 }
 </style>
