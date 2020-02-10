@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { unionBy } from 'lodash'
+import { unionBy, concat } from 'lodash'
 
 export default {
   UPSERT_ACCOUNTS(state, accounts) {
@@ -18,7 +18,7 @@ export default {
     state.syncedAt = time
   },
   ADD_MESSAGES(state, messages) {
-    state.messages = unionBy(messages, state.messages, 'id')
+    state.messages = concat(messages, state.messages)
   },
   READ_MESSAGE(state, msgId) {
     const msg = state.messages.find(msg => msg.id === msgId)

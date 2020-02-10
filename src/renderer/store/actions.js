@@ -1,7 +1,7 @@
 import GmailService from '../services/GmailService'
 import { values } from 'lodash'
 
-export async function addAccount({ commit }) {
+export async function addAccount({ commit, dispatch }) {
   commit('SET_LOADING', true)
   const { err, account, messages } = await GmailService.addAccount()
   if (err) {
@@ -11,29 +11,35 @@ export async function addAccount({ commit }) {
   }
 
   commit('UPSERT_ACCOUNT', account)
-  commit('ADD_MESSAGES', messages)
+  dispatch('addMessages', messages)
   commit('SET_LOADING', false)
 }
 
-export async function getAllMessages({ state, commit }, hideLoading) {
+export async function getAllMessages({ state, commit, dispatch }, hideLoading) {
   if (!hideLoading) {
     commit('SET_LOADING', true)
   }
   const accounts = state.accounts.filter(acc => acc.token)
   const [newAccounts, messages] = await GmailService.fetchEmails(accounts)
-  commit('ADD_MESSAGES', messages)
+  dispatch('addMessages', messages)
   commit('UPSERT_ACCOUNTS', newAccounts)
   commit('SET_SYNCED_AT', new Date().getTime())
 
-  if (state.config.sync === 'auto' && messages.length > 0) {
-    // eslint-disable-next-line
-    new Notification(`Gmail Reader`, {
-      body: `${messages.length} new email(s) arrived`
-    })
-  }
-
   if (!hideLoading) {
     commit('SET_LOADING', false)
+  }
+}
+
+export function addMessages({ state, commit }, messages) {
+  const allMsgIds = state.messages.map(msg => msg.id)
+  const newMessages = messages.filter(msg => !allMsgIds.includes(msg.id))
+  commit('ADD_MESSAGES', newMessages)
+
+  if (state.config.sync === 'auto' && newMessages.length > 0) {
+    // eslint-disable-next-line
+    new Notification(`Gmail Reader`, {
+      body: `${newMessages.length} new email(s) arrived`
+    })
   }
 }
 
