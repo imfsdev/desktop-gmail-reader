@@ -1,6 +1,6 @@
 {
   "name": "gmail-reader-desktop",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "",
   "description": "Gmail Reader Application built with Electron Vue",
   "license": "MIT",
