@@ -13,6 +13,10 @@ if (process.env.NODE_ENV !== 'development') {
     .replace(/\\/g, '\\\\')
 }
 
+if (process.platform === 'win32') {
+  app.setAppUserModelId(process.execPath)
+}
+
 let mainWindow
 const winURL =
   process.env.NODE_ENV === 'development'
